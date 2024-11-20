@@ -17,6 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+
+# COLOCAR AS PAGINAS DE LOGIN E CADASTRO
+# LOGIN
+# SIGNUP
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
