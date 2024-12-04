@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from Agende.views import register_user, login_view
 
 
 # COLOCAR AS PAGINAS DE LOGIN E CADASTRO
@@ -23,4 +24,7 @@ from django.urls import path
 # SIGNUP
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', login_view, name='login'),
+    path('register/', register_user, name='register')
+    
 ]
