@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Agende.views import register_user, login_view
+from Agende.views import register_user, login_view, register_clinica, success, base
+
 
 
 # COLOCAR AS PAGINAS DE LOGIN E CADASTRO
@@ -25,6 +26,10 @@ from Agende.views import register_user, login_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', login_view, name='login'),
-    path('register/', register_user, name='register')
-    
+    path('register/', register_user, name='register'),
+    path('registerclinica/', register_clinica, name='register'),
+    path('success/<str:nome>/', success, name='success'),
+    path('base.html/', base, name='base.html'),
 ]
+
+

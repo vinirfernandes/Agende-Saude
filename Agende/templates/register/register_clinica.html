@@ -1,56 +1,35 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
+    <title>Cadastro da Clínica</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
+
 <body>
-    <h1>Cadastro</h1>
-
-    <!-- Exibir mensagens de sucesso ou erro -->
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <!-- Formulário de cadastro -->
+    <h1>Cadastro da Clínica</h1>
     <form method="post">
         {% csrf_token %}
 
         <div>
-            <label for="first_name">Primeiro Nome</label>
+            <label for="first_name">Nome Clinica</label>
             {{ form.first_name }}
-        </div>
-
-        <div>
-            <label for="last_name">Último Nome</label>
-            {{ form.last_name }}
         </div>
 
         <div>
             <label for="email">Email</label>
             {{ form.email }}
         </div>
-
         <div>
             <label for="telefone">Telefone</label>
             {{ form.telefone }}
         </div>
-
         <div>
-            <label for="data_nascimento">Data de Nascimento</label>
-            {{ form.data_nascimento }}
-        </div>
-
-        <div>
-            <label for="cpf">CPF</label>
-            {{ form.cpf }}
+            <label for="cnpj">CNPJ</label>
+            {{ form.cnpj }}
         </div>
 
         <h3>Endereço</h3>
@@ -85,6 +64,6 @@
         </div>
 
         <button type="submit">Cadastrar</button>
-    </form>
 </body>
+
 </html>
