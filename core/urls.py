@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Agende.views import register_user, login_view, register_clinica, success, base
+from Agende.views import register_user, login_view, register_clinica, success, base, mapa_clinica
 
 
 
@@ -30,6 +30,7 @@ urlpatterns = [
     path('registerclinica/', register_clinica, name='register'),
     path('success/<str:nome>/', success, name='success'),
     path('base.html/', base, name='base.html'),
+    path('mapa/', mapa_clinica, name='mapa_clinica'),
 ]
 
 

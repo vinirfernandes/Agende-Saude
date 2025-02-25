@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínicas Médicas Próximas</title>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Clínicas Médicas Próximas</h1>
+    
+    <form id="filterForm">
+        <label for="especialidade">Especialidade:</label>
+        <select id="especialidade">
+            <option value="">Todas</option>
+            <option value="Cardiologia">Cardiologia</option>
+            <option value="Pediatria">Pediatria</option>
+            <option value="Ortopedia">Ortopedia</option>
+        </select>
+    
+        <label for="distancia">Distância (km):</label>
+        <input type="number" id="distancia" min="1" max="50" value="10">
+    
+        <button type="submit">Filtrar</button>
+    </form>
+    
+    <div id="map"></div>
+
+    <script>
+        let map;
+
+        function initMap() {
+            const defaultLocation = { lat: -23.5505, lng: -46.6333 };  // Localização padrão
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: defaultLocation,
+            });
+
+            // Função para obter a localização do usuário e filtrar as clínicas
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+
+                        // Centralizar o mapa na localização do usuário apenas na primeira vez
+                        if (map.getCenter().lat() === defaultLocation.lat && map.getCenter().lng() === defaultLocation.lng) {
+                            map.setCenter(userLocation);
+                        }
+
+                        // Adicionar marcador de localização do usuário
+                        new google.maps.Marker({
+                            position: userLocation,
+                            map: map,
+                            title: "Você está aqui!",
+                            icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                        });
+
+                        // Obter as clínicas mais próximas via AJAX
+                        getClinicas(userLocation);
+                    },
+                    (error) => {
+                        console.error('Erro ao obter a localização:', error);
+                        alert("Erro ao obter localização. Código de erro: " + error.code);
+                    }
+                );
+            } else {
+                alert("Geolocalização não é suportada neste navegador.");
+            }
+        }
+
+        // Função para enviar a localização do usuário ao Django e pegar as clínicas
+        function getClinicas(userLocation) {
+            // Pegar os valores dos filtros
+            const especialidade = document.getElementById("especialidade").value;
+            const distancia = document.getElementById("distancia").value;
+
+            fetch('/filtrar-clinicas/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    latitude: userLocation.lat,
+                    longitude: userLocation.lng,
+                    especialidade: especialidade,
+                    distancia: distancia
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Limpar os marcadores existentes no mapa
+                clearMarkers();
+
+                // Adicionar as clínicas como marcadores no mapa
+                data.forEach(clinica => {
+                    new google.maps.Marker({
+                        position: { lat: clinica.latitude, lng: clinica.longitude },
+                        map: map,
+                        title: clinica.nome
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao obter clínicas:', error);
+                alert('Erro ao obter clínicas!');
+            });
+        }
+
+        // Função para limpar os marcadores existentes no mapa
+        function clearMarkers() {
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = [];
+        }
+
+        // Função para obter o token CSRF do Django
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Evento de submit do formulário de filtro
+        document.getElementById('filterForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Impede o envio tradicional do formulário
+            navigator.geolocation.getCurrentPosition((position) => {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                getClinicas(userLocation);  // Recarregar as clínicas com os filtros
+            });
+        });
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4FDi6bVZoMghHLfBQoyZXhjYWBpFcZdk&callback=initMap" async defer></script>
+</body>
+</html>

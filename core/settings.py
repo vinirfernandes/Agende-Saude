@@ -71,6 +71,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+GOOGLE_MAPS_API_KEY = "AIzaSyB4FDi6bVZoMghHLfBQoyZXhjYWBpFcZdk"
+
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -123,3 +125,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+

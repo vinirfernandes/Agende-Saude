@@ -19,9 +19,11 @@ class Profile(models.Model):
 class Clinica(models.Model): 
         user = models.OneToOneField(User, on_delete=models.CASCADE) 
         telefone = models.CharField(max_length=15) 
-        cnpj = models.CharField(max_length=11, unique=True) 
+        cnpj = models.CharField(max_length=14, unique=True) 
         cep = models.CharField(max_length=10) 
         numero = models.CharField(max_length=10) 
         uf = models.CharField(max_length=2) 
         cidade = models.CharField(max_length=100) 
-        complemento = models.CharField(max_length=255, blank=True, null=True) 
+        complemento = models.CharField(max_length=255, blank=True, null=True)
+        latitude = models.FloatField()
+        longitude = models.FloatField()

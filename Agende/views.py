@@ -5,6 +5,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User 
 from .forms import RegisterProfileForm, RegisterClinicaForm
 from .models import Profile, Clinica
+import json 
+
 
 
 def register_user(request):
@@ -81,4 +83,16 @@ def base(resquest):
     return render(resquest, 'base.html')
     
 
-    
+def mapa_clinica(request):
+    clinicas = [
+        {"nome": "Clínica A", "latitude": -23.5505, "longitude": -46.6333, "especialidade": "Cardiologia"},
+        {"nome": "Clínica B", "latitude": -23.5510, "longitude": -46.6400, "especialidade": "Pediatria"},
+        {"nome": "Clínica C", "latitude": -23.5520, "longitude": -46.6500, "especialidade": "Ortopedia"},
+    ]
+
+    clinicas_json = json.dumps(clinicas)
+
+    return render(request, "busca_clinica/mapa.html", {
+        "clinicas_json": clinicas_json,
+        "GOOGLE_MAPS_API_KEY": "AIzaSyB4FDi6bVZoMghHLfBQoyZXhjYWBpFcZdk"
+    })
